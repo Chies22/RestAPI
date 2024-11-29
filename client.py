@@ -1,26 +1,32 @@
 import requests
 
-# API endpoint URL
-url = "http://127.0.0.1:5000/"
+BASE_URL = 'http://localhost:5000/products'
 
-# Create a new product
-data = {'name': 'New Product', 'description': 'This is a new product', 'price': 19.99}
-response = requests.post(url, json=data)
+def add_product(name, description, price):
+    product = {
+        'name': name,
+        'description': description,
+        'price': price
+    }
+    try:
+        response = requests.post(BASE_URL, json=product)
+        if response.status_code == 201:
+            print('Product added successfully:', response.json())
+        else:
+            print('Failed to add product:', response.json())
+    except requests.exceptions.RequestException as e:
+        print(f'Error: {e}')
 
-if response.status_code == 201:
-    print("Product created successfully!")
-    new_product = response.json()
-    print(f"New product: {new_product}")
-else:
-    print(f"Error creating product: {response.status_code} {response.text}")
+def get_products():
+    try:
+        response = requests.get(BASE_URL)
+        if response.status_code == 200:
+            print('Products:', response.json())
+        else:
+            print('Failed to retrieve products:', response.json())
+    except requests.exceptions.RequestException as e:
+        print(f'Error: {e}')
 
-# Get all products
-response = requests.get(url)
-
-if response.status_code == 200:
-    products = response.json()
-    print("Products:")
-    for product in products:
-        print(f"- {product['name']} ({product['price']})")
-else:
-    print(f"Error retrieving products: {response.status_code} {response.text}")
+# Example usage
+add_product('Laptop', 'A high-performance laptop', 999.99)
+get_products()
